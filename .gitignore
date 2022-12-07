@@ -6,9 +6,6 @@ node_modules
 .pnp.js
 .env
 
-# testing
-/coverage
-
 # production
 /build
 
