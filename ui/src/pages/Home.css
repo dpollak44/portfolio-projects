@@ -1,0 +1,12 @@
+.home{
+    text-align: center;
+}
+
+.user-type-button{
+    padding: 1.5rem 3rem;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    margin: .5rem;
+    cursor: pointer;
+}
