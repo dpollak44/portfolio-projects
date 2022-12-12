@@ -8,7 +8,7 @@ const sequelize = require('../db.js');
     } catch (error) {
       console.error('Unable to connect to the database:', error);
     }
-    //await sequelize.sync({ force: true })
+    await sequelize.sync({ force: true })
 })();
 
 const Patient = require('./patient')(sequelize, Sequelize);

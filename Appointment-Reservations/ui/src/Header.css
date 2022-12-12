@@ -1,43 +1,5 @@
-/* nav {
-    width: 100%;
-    padding-left: 30px;
-    padding-right: 10px;
-  }
-  
-  .logo {
-    display: inline-block;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display:flex;
-    
-  }
-  
-  .nav-item a {
-    display: inline-block;
-    padding: 10px 15px;
-    text-decoration: none;
-    color: black;
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-  
-  .nav-item:hover {
-    background-color: white;
-  }
-  
-  .nav-item:hover a {
-    color: darkgray;
-  } */
-  
-  #logo {
+#logo {
     width: 175px;
     vertical-align: middle;
-  }
+}
   
-  /* .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  } */

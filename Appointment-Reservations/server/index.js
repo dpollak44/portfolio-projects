@@ -4,6 +4,15 @@ const cors = require('cors')
 require('dotenv').config()
 const app = express()
 app.use(bodyParser.json())
+const session = require('express-session');
+app.use(session({
+  secret: 'mySecret',
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+  },
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(cors())
 
 const { PORT } = process.env;

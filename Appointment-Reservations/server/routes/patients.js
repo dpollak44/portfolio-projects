@@ -12,9 +12,12 @@ router.post('/create', async(req, res) => {
         res.status(200).send({message: 'Patient created successfully'});
     }
     catch(err){
-        res
-        .status(500)
-        .send({message: 'Error creating patient', error: err});
+        if(err.name === 'SequelizeUniqueConstraintError'){
+            res.status(400).send({message: 'Patient already exists'});
+        }
+        else{
+            res.status(500).send({message: 'Internal server error'});
+        }
     }
 });
 

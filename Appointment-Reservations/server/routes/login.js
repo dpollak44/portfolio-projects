@@ -2,8 +2,9 @@ const express = require('express')
 const {Provider,Patient} = require('../models/index.js');
 const router = express.Router()
 
-router.get('/', async(req, res) => {
-    const {id, type} = req.query;
+router.post('/', async(req, res) => {
+    console.log(req.body);
+    const {id, type} = req.body;
     try{
         if(type === 'Provider'){
             const provider = await Provider.findOne({
@@ -11,8 +12,10 @@ router.get('/', async(req, res) => {
                     id: +id
                 }
             });
+            console.log(provider);
             if(provider){
-                res.status(200).send(provider);
+                req.session.provider = provider;
+                res.status(200).send({message: 'Provider logged in successfully'});
             }
             else{
                 res.status(404).send({message: 'Provider not found'});
@@ -25,7 +28,8 @@ router.get('/', async(req, res) => {
                 }
             });
             if(patient){
-                res.status(200).send(patient);
+                req.session.patient = patient;
+                res.status(200).send({message: 'Patient logged in successfully'});
             }
             else{
                 res.status(404).send({message: 'Patient not found'});
@@ -38,7 +42,39 @@ router.get('/', async(req, res) => {
     catch(err){
         res
         .status(500)
-        .send({message: 'Error logging in', error: err});
+        .send({message:"Internal server error", error: err});
+    }
+});
+
+router.post('/logout', async(req, res) => {
+    const {type} = req.body;
+    try{
+        if(type === 'Provider'){
+            if(res.session.provider){
+                req.session.provider = null;
+                res.status(200).send({message: 'Provider logged out successfully'});
+            }
+            else{
+                res.status(400).send({message: 'Provider not logged in'});
+            }
+        }
+        else if(type === 'Patient'){
+            if(res.session.patient){
+                req.session.patient = null;
+                res.status(200).send({message: 'Patient logged out successfully'});
+            }
+            else{
+                res.status(400).send({message: 'Patient not logged in'});
+            }
+        }
+        else{
+            res.status(400).send({message: 'Invalid type'});
+        }
+    }
+    catch(err){
+        res
+        .status(500)
+        .send({message: 'Error logging out', error: err});
     }
 });
 

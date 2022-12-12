@@ -13,9 +13,12 @@ router.post('/create', async(req, res) => {
         res.status(200).send({message: 'Provider created successfully'});
     }
     catch(err){
-        res
-        .status(500)
-        .send({message: 'Error creating provider', error: err});
+        if(err.name === 'SequelizeUniqueConstraintError'){
+            res.status(400).send({message: 'Provider already exists'});
+        }
+        else{
+            res.status(500).send({message: 'Internal server error'});
+        }
     }
 });
 
@@ -31,34 +34,44 @@ router.get('/list', async(req, res) => {
     }
 });
 
-router.post('/availability', async(req, res) => {
-    const {provider_id, date, start_time, end_time} = req.body;
+router.post('/add-availability', async(req, res) => {
+    const {provider} = req.session;
+    const {date, start_time, end_time} = req.body;
+    const dateOnly = moment(date).format('YYYY-MM-DD');
     try{
         await ProviderAvailability.create({
-            provider_id: +provider_id,
-            date: date,
+            provider_id: +provider.id,
+            date: dateOnly,
             start_time: start_time,
             end_time: end_time
         });
         res.status(200).send({message: 'Provider availability set successfully'});
     }
     catch(err){
-        res
-        .status(500)
-        .send({message: 'Error creating provider availability', error: err});
+        console.log(err);
+        if(err.name === 'SequelizeUniqueConstraintError'){
+            res.status(400).send({message: 'Provider availability already exists'});
+        }
+        else{
+            res.status(500).send({message: 'Internal server error'});
+        }
     }
 });
 
 router.get('/available-dates', async(req, res) => {
     const {provider_id} = req.query;
+    if(!provider_id){
+        res.status(400).send({message: 'Missing provider_id'});
+    }
     try{
         const providerAvailability = await ProviderAvailability.findAll({
             where: {
-                provider_id: +provider_id,
-            }
+                provider_id: +provider_id
+            },
+            distinct: true,
         });
         const providerDates = providerAvailability.map((availability) => {
-            return moment(availability.date).toISOString();
+            return moment(availability.date).format('YYYY-MM-DD');
         });
         res.status(200).send(providerDates);
     }
@@ -71,6 +84,9 @@ router.get('/available-dates', async(req, res) => {
 
 router.get('/available-times', async(req, res) => {
     const {provider_id, date} = req.query;
+    if(!provider_id || !date){
+        res.status(400).send({message: 'Missing provider_id or date'});
+    }
     const availableTimes = [];
     try{
         const providerAvailability = await ProviderAvailability.findAll({
