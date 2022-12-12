@@ -5,7 +5,7 @@ import './Header.css';
 
 const Header = () => {
   return (
-      <Navbar bg="light" expand="lg">
+      <Navbar id="nav" bg="light" expand="lg" p="10">
           <LinkContainer to="/">
 <Navbar.Brand><img id="logo" src="https://henrymeds.com/wp-content/uploads/2022/02/Henry-Logo-Black.png" alt="Henry logo"></img></Navbar.Brand>
 </LinkContainer>
