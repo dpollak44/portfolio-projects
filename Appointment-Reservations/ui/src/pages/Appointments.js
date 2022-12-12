@@ -3,15 +3,17 @@ import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-const Appointments = ({appointments,refreshAppointments,confirmAppointment}) => {
+const Appointments = ({appointments,refreshAppointments,onConfirmAppointment}) => {
 
         useEffect(() => {
             refreshAppointments();
         }, []);
 
-        const onConfirmAppointment = async(id) => {
-            const message = await confirmAppointment(id);
+        const handleConfirmAppointment = async(id) => {
+            const {message} = await onConfirmAppointment(id);
             alert(message);
+            refreshAppointments();
+
         }
 
         const tableAppointments = appointments.length > 0 ?
@@ -23,7 +25,7 @@ const Appointments = ({appointments,refreshAppointments,confirmAppointment}) => 
                             <td>{new Date(appointment.time).toLocaleTimeString()}</td>
                             <td>
                                 {!appointment.confirmed ?
-                                <Button variant="warning" onClick={() => onConfirmAppointment(appointment.id)}>Confirm</Button>
+                                <Button variant="warning" onClick={() => handleConfirmAppointment(appointment.id)}>Confirm</Button>
                                     : <Button variant="success" disabled>Confirmed</Button>
                                 }
                             </td>

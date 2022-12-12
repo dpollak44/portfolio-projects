@@ -13,7 +13,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-app.use(cors())
+app.use(cors({credentials: true, origin: 'http://localhost:3002'}));
 
 const { PORT } = process.env;
 

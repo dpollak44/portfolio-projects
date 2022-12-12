@@ -15,10 +15,10 @@ router.post('/', async(req, res) => {
             console.log(provider);
             if(provider){
                 req.session.provider = provider;
-                res.status(200).send({message: 'Provider logged in successfully'});
+                res.status(200).send({message: 'Provider logged in successfully',status:'success'});
             }
             else{
-                res.status(404).send({message: 'Provider not found'});
+                res.status(404).send({message: 'Provider not found',status:'fail'});
             }
         }
         else if(type === 'Patient'){
@@ -29,14 +29,14 @@ router.post('/', async(req, res) => {
             });
             if(patient){
                 req.session.patient = patient;
-                res.status(200).send({message: 'Patient logged in successfully'});
+                res.status(200).send({message: 'Patient logged in successfully',status:'success'});
             }
             else{
-                res.status(404).send({message: 'Patient not found'});
+                res.status(404).send({message: 'Patient not found',status:'fail'});;
             }
         }
         else{
-            res.status(400).send({message: 'Invalid type'});
+            res.status(400).send({message: 'Invalid type',status:'fail'});
         }
     }
     catch(err){
@@ -52,29 +52,29 @@ router.post('/logout', async(req, res) => {
         if(type === 'Provider'){
             if(res.session.provider){
                 req.session.provider = null;
-                res.status(200).send({message: 'Provider logged out successfully'});
+                res.status(200).send({message: 'Provider logged out successfully',status:'success'});
             }
             else{
-                res.status(400).send({message: 'Provider not logged in'});
+                res.status(400).send({message: 'Provider not logged in',status:'fail'});
             }
         }
         else if(type === 'Patient'){
             if(res.session.patient){
                 req.session.patient = null;
-                res.status(200).send({message: 'Patient logged out successfully'});
+                res.status(200).send({message: 'Patient logged out successfully',status:'success'});
             }
             else{
-                res.status(400).send({message: 'Patient not logged in'});
+                res.status(400).send({message: 'Patient not logged in',status:'fail'});
             }
         }
         else{
-            res.status(400).send({message: 'Invalid type'});
+            res.status(400).send({message: 'Invalid type',status:'fail'});
         }
     }
     catch(err){
         res
         .status(500)
-        .send({message: 'Error logging out', error: err});
+        .send({message: 'Error logging out',status:'fail'});
     }
 });
 

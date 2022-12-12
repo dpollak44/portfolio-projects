@@ -35,6 +35,7 @@ router.get('/list', async(req, res) => {
 });
 
 router.post('/add-availability', async(req, res) => {
+    console.log('req.body', req.body);
     const {provider} = req.session;
     const {date, start_time, end_time} = req.body;
     const dateOnly = moment(date).format('YYYY-MM-DD');

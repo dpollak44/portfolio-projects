@@ -3,95 +3,129 @@ import { parseISO } from 'date-fns';
 const baseUrl = 'http://localhost:5000';
 
 const getProviders = async () => {
-    const res = await fetch(`${baseUrl}/providers/list`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await res.json();
-    return data;
+    try{
+        const res = await fetch(`${baseUrl}/providers/list`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await res.json();
+        return data;
+    }
+    catch (err) {
+        return err;
+    }
 }
 
-const setProviderAvailability = async (providerId, date, startTime,endTime) => {
-    const res = await fetch(`${baseUrl}/providers/availability`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            
-        },
-        body: JSON.stringify({
-            provider_id: providerId,
-            date: date,
-            start_time: startTime,
-            end_time: endTime
-        }),
-    });
-    const message = await res.json();
-    return message;
+const setProviderAvailability = async (date, startTime,endTime) => {
+    try{
+        const res = await fetch(`${baseUrl}/providers/add-availability`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                
+            },
+            body: JSON.stringify({
+                date: date,
+                start_time: startTime,
+                end_time: endTime
+            }),
+        });
+        const jsonRes = await res.json();
+        const message = jsonRes.message;
+        return message;
+    }
+    catch (err) {
+        return err;
+    }
 };
 
-const bookPatientAppointment = async (patientId, providerId, date, time) => {
-    const res = await fetch(`${baseUrl}/appointments/new`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            patient_id: patientId,
-            provider_id: providerId,
-            date: date,
-            time: time
-        }),
-    });
-    const message = await res.json();
-    return message;
+const bookPatientAppointment = async (providerId, date, time) => {
+    try{
+        const res = await fetch(`${baseUrl}/appointments/new`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                provider_id: providerId,
+                date: date,
+                time: time
+            }),
+        });
+        const jsonRes = await res.json();
+        const message = jsonRes.message;
+        return message;
+    }
+    catch (err) {
+        return err;
+    }
 };
 
 const getProviderDates = async (providerId) => {
-    const res = await fetch(`${baseUrl}/providers/available-dates?provider_id=${providerId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await res.json();
-    const isoDates = data.map(date => parseISO(date));
-    return isoDates;
+    try{
+        const res = await fetch(`${baseUrl}/providers/available-dates?provider_id=${providerId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await res.json();
+        const isoDates = data.map(date => parseISO(date));
+        return isoDates;
+    } catch (err) {
+        return err;
+    }
 }
 
 const getProviderTimes = async (providerId, date) => {
-    const res = await fetch(`${baseUrl}/providers/available-times?provider_id=${providerId}&date=${date}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await res.json();
-    const times_with_date = data.map(time => {
-        const date_time = new Date(date);
-        date_time.setHours(time.split(':')[0]);
-        date_time.setMinutes(time.split(':')[1]);
-        return date_time;
-    });
-    return times_with_date;
+    try{
+        const res = await fetch(`${baseUrl}/providers/available-times?provider_id=${providerId}&date=${date}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await res.json();
+        const times_with_date = data.map(time => {
+            const date_time = new Date(date);
+            date_time.setHours(time.split(':')[0]);
+            date_time.setMinutes(time.split(':')[1]);
+            return date_time;
+        });
+        return times_with_date;
+    }catch (err) {
+        return err;
+    }
 }
 
 const getPatientAppointments = async (patientId) => {
-    const res = await fetch(`${baseUrl}/appointments?patient_id=${patientId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await res.json();
-    return data;
+    try{
+        const res = await fetch(`${baseUrl}/appointments?patient_id=${patientId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await res.json();
+        return data;
+    }catch (err) {
+        return err;
+    }
 }
 
 const confirmAppointment = async (appointmentId) => {
     try{
         const res = await fetch(`${baseUrl}/appointments/confirm`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -100,22 +134,30 @@ const confirmAppointment = async (appointmentId) => {
             }),
         });
         const jsonRes = await res.json();
-        return jsonRes.message;
+        return jsonRes;
     } catch (err) {
         return err;
     }
 }
 
 const login = async (type,id) => {
-    const res = await fetch(`${baseUrl}/login?type=${type}&id=${id}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const status = res.status;
-    const message = await res.json();
-    return {status, message};
+    try{
+        const res = await fetch(`${baseUrl}/login`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: type,
+                id: id
+            })
+        });
+        const jsonRes = await res.json();
+        return jsonRes;
+    } catch (err) {
+        return err;
+    }
 }
 
 

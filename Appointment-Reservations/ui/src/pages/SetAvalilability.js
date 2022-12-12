@@ -11,11 +11,17 @@ const SetAvailability = ({provider_id}) => {
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
+        setDate('');
         setStartTime('');
         setEndTime('');
-        setProviderAvailability(provider_id, date, startTime.getHours() + ":" + startTime.getMinutes(), endTime.getHours() + ":" + endTime.getMinutes());
+        const message = await setProviderAvailability(
+                date,
+                startTime.getHours() + ":" + startTime.getMinutes(),
+                endTime.getHours() + ":" + endTime.getMinutes()
+        );
+        alert(message);
     }
 
 

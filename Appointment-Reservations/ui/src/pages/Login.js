@@ -10,17 +10,10 @@ const Login = ({type,handleSetId}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const res = await login(type,id);
-            if(res.status === 200){
-                handleSetId(id);
-            }
-            else{
-                alert('Unable to login. Check your id and try again.');
-            }
-        }
-        catch(err){
-            alert(`We're sorry. We are unable to log you in at this time.`);
+        const {status,message} = await login(type,id);
+        alert(message);
+        if(status === 'success'){
+            handleSetId(id);
         }
     }
 

@@ -79,15 +79,15 @@ router.post('/confirm', async(req, res) => {
             }
         });
         if(apptConfirmRes[0] === 1){
-            res.status(200).send({message: 'Patient appointment confirmed successfully'});
+            res.status(200).send({message: 'Patient appointment confirmed successfully',status:"success"});
         }
         else{
-            res.status(400).send({message: 'Patient appointment not found'});
+            res.status(400).send({message: 'Patient appointment not found',status:"not found"});
         }
     }
     catch(e){
         console.log(e);
-        res.status(500).send({message: 'Unable to confirm appointment'})
+        res.status(500).send({message: 'Unable to confirm appointment',status:"fail"});
     }
 });
 

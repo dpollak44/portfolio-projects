@@ -10,16 +10,15 @@ const Patients = () => {
 
     const refreshAppointments = () => {
         (async () => {
-            const res = await getPatientAppointments(patient_id);
-            console.log(res)
+            const res = await getPatientAppointments();
             setAppointments(res);
         })();
     }
 
     const display = patient_id ? 
     <>
-        <BookAppointment patient_id={patient_id} refreshAppointments={refreshAppointments}/>
-        <Appointments appointments={appointments} refreshAppointments={refreshAppointments}  confirmAppointment={confirmAppointment}/>
+        <BookAppointment refreshAppointments={refreshAppointments}/>
+        <Appointments appointments={appointments} refreshAppointments={refreshAppointments}  onConfirmAppointment={confirmAppointment}/>
     </>
     : <Login type="Patient" handleSetId={setPatientId}/>
 

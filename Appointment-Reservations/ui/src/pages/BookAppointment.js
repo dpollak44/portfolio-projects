@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import {getProviders, getProviderDates, getProviderTimes, bookPatientAppointment} from '../utils/api.js';
 import DatePicker from "react-datepicker";
 
-const BookAppointment = ({patient_id,refreshAppointments}) => {
+const BookAppointment = ({refreshAppointments}) => {
     const [providers, setProviders] = useState([]);
     const [provider, setProvider] = useState('');
     const [availableDates, setAvailableDates] = useState([]);
@@ -39,7 +39,8 @@ const BookAppointment = ({patient_id,refreshAppointments}) => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         let timeString = time.getHours() + ":" + time.getMinutes();
-        await bookPatientAppointment(patient_id, provider, date, timeString);
+        const message = await bookPatientAppointment(provider, date, timeString);
+        alert(message);
         setProvider('');
         setDate('');
         setTime('');
