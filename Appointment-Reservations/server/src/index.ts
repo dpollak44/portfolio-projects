@@ -1,10 +1,10 @@
-const express = require('express')
-const bodyParser=require("body-parser");
-const cors = require('cors')
+import express from 'express';
+import bodyParser from "body-parser";
+import cors from 'cors';
 require('dotenv').config()
 const app = express()
 app.use(bodyParser.json())
-const session = require('express-session');
+import session from 'express-session';
 app.use(session({
   secret: 'mySecret',
   cookie: {
@@ -17,10 +17,10 @@ app.use(cors({credentials: true, origin: 'http://localhost:3002'}));
 
 const { PORT } = process.env;
 
-const provider_route = require('./routes/providers.js');
-const patient_route = require('./routes/patients.js');
-const appointment_route = require('./routes/appointments.js');
-const login_route = require('./routes/login.js');
+import provider_route from './routes/providers';
+import patient_route from './routes/patients';
+import appointment_route from './routes/appointments';
+import login_route from './routes/login';
 app.use('/providers', provider_route);
 app.use('/patients', patient_route);
 app.use('/appointments', appointment_route);

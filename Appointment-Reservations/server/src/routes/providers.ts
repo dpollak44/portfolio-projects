@@ -1,7 +1,7 @@
-const express = require('express')
-const moment = require('moment');
+import express, {Request, Response} from 'express';
+import moment from 'moment';
 const router = express.Router();
-const {Provider, ProviderAvailability, PatientAppointment} = require('../models/index.js');
+import { Provider, ProviderAvailability, PatientAppointment } from '../models/index.js';
 
 router.post('/create', async(req, res) => {
     const {id, name} = req.body;
@@ -12,7 +12,7 @@ router.post('/create', async(req, res) => {
         });
         res.status(200).send({message: 'Provider created successfully'});
     }
-    catch(err){
+    catch(err:any){
         if(err.name === 'SequelizeUniqueConstraintError'){
             res.status(400).send({message: 'Provider already exists'});
         }
@@ -41,14 +41,14 @@ router.post('/add-availability', async(req, res) => {
     const dateOnly = moment(date).format('YYYY-MM-DD');
     try{
         await ProviderAvailability.create({
-            provider_id: +provider.id,
+            provider_id: +provider!.id,
             date: dateOnly,
             start_time: start_time,
             end_time: end_time
         });
         res.status(200).send({message: 'Provider availability set successfully'});
     }
-    catch(err){
+    catch(err:any){
         console.log(err);
         if(err.name === 'SequelizeUniqueConstraintError'){
             res.status(400).send({message: 'Provider availability already exists'});
@@ -67,11 +67,11 @@ router.get('/available-dates', async(req, res) => {
     try{
         const providerAvailability = await ProviderAvailability.findAll({
             where: {
-                provider_id: +provider_id
+                provider_id: +provider_id!
             },
-            distinct: true,
+            // distinct: true,
         });
-        const providerDates = providerAvailability.map((availability) => {
+        const providerDates = providerAvailability.map((availability: { date: moment.MomentInput; }) => {
             return moment(availability.date).format('YYYY-MM-DD');
         });
         res.status(200).send(providerDates);
@@ -92,17 +92,17 @@ router.get('/available-times', async(req, res) => {
     try{
         const providerAvailability = await ProviderAvailability.findAll({
             where: {
-                provider_id: +provider_id,
+                provider_id: +provider_id!,
                 date: date
             }
         });
         const patientAppointments = await PatientAppointment.findAll({
             where: {
-                provider_id: +provider_id,
+                provider_id: +provider_id!,
                 date: date
             }
         });
-        const bookedStartTimes = patientAppointments.map((availability) => {
+        const bookedStartTimes = patientAppointments.map((availability: { time: moment.MomentInput; }) => {
             return moment(availability.time, 'HH:mm');
         });
         for(let i of providerAvailability){
@@ -111,7 +111,7 @@ router.get('/available-times', async(req, res) => {
             const endTime = moment(i.end_time, 'HH:mm');
             while(startTime < endTime){
                 // eslint-disable-next-line no-loop-func
-                const isBooked = bookedStartTimes.some((bookedTime) => {
+                const isBooked = bookedStartTimes.some((bookedTime: { isSame: (arg0: moment.Moment) => any; }) => {
                     return bookedTime.isSame(startTime);
                 });
                 const dateTime = moment(date).add(startTime.hour(), 'hours').add(startTime.minute(), 'minutes');
@@ -131,4 +131,4 @@ router.get('/available-times', async(req, res) => {
     }
 });
 
-module.exports = router
+export default router;

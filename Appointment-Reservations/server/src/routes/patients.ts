@@ -1,8 +1,8 @@
-const express = require('express')
-const {Patient} = require('../models/index.js');
+import express, {Request, Response} from 'express';
+import { Patient } from '../models/index.js';
 const router = express.Router()
 
-router.post('/create', async(req, res) => {
+router.post('/create', async(req: Request, res: Response) => {
     const {id, name} = req.body;
     try{
         await Patient.create({
@@ -11,7 +11,7 @@ router.post('/create', async(req, res) => {
         });
         res.status(200).send({message: 'Patient created successfully'});
     }
-    catch(err){
+    catch(err:any){
         if(err.name === 'SequelizeUniqueConstraintError'){
             res.status(400).send({message: 'Patient already exists'});
         }
@@ -23,4 +23,4 @@ router.post('/create', async(req, res) => {
 
 
 
-module.exports = router
+export default router;

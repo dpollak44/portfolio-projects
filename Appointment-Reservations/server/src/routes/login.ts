@@ -1,6 +1,12 @@
-const express = require('express')
-const {Provider,Patient} = require('../models/index.js');
+import express, {Request, Response} from 'express';
+import { Provider, Patient } from '../models/index.js';
 const router = express.Router()
+
+declare module 'express-session' {
+    export interface SessionData {
+        provider: { [key: string]: any };
+    }
+  }
 
 router.post('/', async(req, res) => {
     console.log(req.body);
@@ -46,26 +52,16 @@ router.post('/', async(req, res) => {
     }
 });
 
-router.post('/logout', async(req, res) => {
+router.post('/logout', async(req:Request, res:Response) => {
     const {type} = req.body;
     try{
         if(type === 'Provider'){
-            if(res.session.provider){
-                req.session.provider = null;
-                res.status(200).send({message: 'Provider logged out successfully',status:'success'});
-            }
-            else{
-                res.status(400).send({message: 'Provider not logged in',status:'fail'});
-            }
+            req.session.provider = undefined;
+            res.status(200).send({message: 'Provider logged out successfully',status:'success'});
         }
         else if(type === 'Patient'){
-            if(res.session.patient){
-                req.session.patient = null;
-                res.status(200).send({message: 'Patient logged out successfully',status:'success'});
-            }
-            else{
-                res.status(400).send({message: 'Patient not logged in',status:'fail'});
-            }
+            req.session.patient = undefined;
+            res.status(200).send({message: 'Patient logged out successfully',status:'success'});
         }
         else{
             res.status(400).send({message: 'Invalid type',status:'fail'});
@@ -74,8 +70,8 @@ router.post('/logout', async(req, res) => {
     catch(err){
         res
         .status(500)
-        .send({message: 'Error logging out',status:'fail'});
+        .send({message:"Internal server error", error: err});
     }
 });
 
-module.exports = router
+export default router;

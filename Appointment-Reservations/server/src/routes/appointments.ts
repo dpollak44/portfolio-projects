@@ -1,36 +1,46 @@
-const express = require('express')
-const { cancelAppointmentIfNotConfirmed } = require('../modules/appointment.js');
-const moment = require('moment');
-const {Provider,PatientAppointment} = require('../models/index.js');
+import express, { Request, Response } from 'express';
+import {cancelAppointmentIfNotConfirmed} from '../modules/appointment';
+import moment from 'moment';
+import {Provider,PatientAppointment} from '../models/index';
+
+
+declare module 'express-session' {
+    export interface SessionData {
+        patient: { [key: string]: any };
+    }
+  }
+
 const router = express.Router()
 
 router.get('/', async(req, res) => {
+    console.log('hello')
     const {patient} = req.session;
+    console.log(patient);
     try{
         PatientAppointment.belongsTo(Provider, {foreignKey: 'provider_id'});
         const patientAppointments = await PatientAppointment.findAll({
             where: {
-                patient_id: +patient.id
+                patient_id: +patient!.id
             },
-            include: 
-                {
-                    model: Provider,
-                    required: true
-                }
-            
+            include: [Provider]
         });
+        console.log(patientAppointments);
         const mappedAppointments = patientAppointments.map((appointment) => {
+            const {provider_id, appointment_id, confirmed, time, date, provider} = appointment;
             return {
-                id: appointment.id,
-                provider_name: appointment.provider.name,
-                date: moment(appointment.date).toISOString(),
-                time: moment(appointment.time, 'HH:mm').toISOString(),
-                confirmed: appointment.confirmed
+                provider_id,
+                appointment_id,
+                confirmed,
+                time,
+                date,
+                provider
             }
-        });
-        res.status(200).send(mappedAppointments);
+        }
+        );
+        res.status(200).send({message: 'Appointments fetched successfully', appointments: mappedAppointments});
     }
     catch(err){
+        console.log(err);
         res
         .status(500)
         .send({message: 'Error getting patient appointments', error: err});
@@ -48,14 +58,14 @@ router.post('/new', async(req, res) => {
         //only create appointment if there are more than 24 hours left
         if(hoursDif < -24){
             const appt_res = await PatientAppointment.create({
-                patient_id: +patient.id,
+                patient_id: +patient!.id,
                 provider_id: +provider_id,
                 date: date,
                 time: time
             });
             const thirtyMinutes = 30 * 60 * 1000;      
-            cancelAppointmentIfNotConfirmed(appt_res.id,thirtyMinutes);
-            res.status(200).send({message: 'Patient appointment created successfully. ID is ' + appt_res.id});
+            cancelAppointmentIfNotConfirmed(appt_res.appointment_id, thirtyMinutes);
+            res.status(200).send({message: 'Patient appointment created successfully. ID is ' + appt_res.appointment_id});
         }else{
             res.status(200).send({message: 'Patient appointment cannot be created less than 24 hours in advance.'});
         }
@@ -75,7 +85,7 @@ router.post('/confirm', async(req, res) => {
             confirmed: true
         }, {
             where: {
-                id: appointment_id
+                appointment_id: +appointment_id
             }
         });
         if(apptConfirmRes[0] === 1){
@@ -91,4 +101,4 @@ router.post('/confirm', async(req, res) => {
     }
 });
 
-module.exports = router
+export default router;
