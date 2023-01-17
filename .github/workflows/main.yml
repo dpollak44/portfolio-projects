@@ -31,8 +31,8 @@ jobs:
             USER_NAME : ec2-user
 
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key ${USER_NAME}@${HOSTNAME} '
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
           
             #Now we have got the access of EC2 and we will start the deploy .
             DIR="/var/www/appointment-reservations"
