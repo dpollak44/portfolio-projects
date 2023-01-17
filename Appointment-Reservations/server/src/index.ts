@@ -20,12 +20,14 @@ const { PORT } = process.env;
 import provider_route from './routes/providers';
 import patient_route from './routes/patients';
 import appointment_route from './routes/appointments';
-import login_route from './routes/login';
+import auth_route from './routes/auth';
 app.use('/providers', provider_route);
 app.use('/patients', patient_route);
 app.use('/appointments', appointment_route);
-app.use('/login', login_route);
+app.use('/auth', auth_route);
+
+export default app;
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
-})
+})  
