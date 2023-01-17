@@ -38,14 +38,14 @@ jobs:
             DIR="/var/www/"
             cd /var/www/
             
-            if [ ! -d $DIR ]
-            then
-              mkdir server &&
-              git clone https://github.com/CodePanthers/node-aws-ec2-github-actions.git server &&
-              cd server &&
-              npm i
-            else
-              cd server
+            # if [ ! -d $DIR ]
+            # then
+            #   mkdir server &&
+            #   git clone https://github.com/CodePanthers/node-aws-ec2-github-actions.git server &&
+            #   cd server &&
+            #   npm i
+            # else
+            #   cd server
             fi
             
             git checkout master &&
