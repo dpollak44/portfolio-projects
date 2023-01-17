@@ -1,35 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
 name: CI
 
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
+    
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
-
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - run: npm ci
-      - run: npm run build
-      - run: npm run test
+      # Runs a single command using the runners shell
+      - name: Deploy in EC2
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY  }}
+            HOSTNAME : ec2-3-84-16-21.compute-1.amazonaws.com
+            USER_NAME : ec2-user
 
-      - name: rsync deployments
-        uses: burnett01/rsync-deployments@5.1
-        with:
-          switches: -avzr --delete
-          path: ./*
-          remote_path: /var/www/appointment-reservations
-          remote_host: ec2-3-84-16-21.compute-1.amazonaws.com
-          remote_user: ec2-user
-          remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          
+            #Now we have got the access of EC2 and we will start the deploy .
+            DIR="/var/www/appointment-reservations"
+            cd /var/www/appointment-reservations
+            
+            if [ ! -d $DIR ]
+            then
+              mkdir server &&
+              git clone https://github.com/CodePanthers/node-aws-ec2-github-actions.git server &&
+              cd server &&
+              npm i
+            else
+              cd server
+            fi
+            
+            git checkout master &&
+            git fetch --all &&
+            git reset --hard origin/master &&
+            git pull origin master
+          '
