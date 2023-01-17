@@ -1,4 +1,4 @@
-import { PatientAppointment } from '../models/index.js';
+import { PatientAppointment } from '../models/index';
 
 const asyncTimeout = (ms: number | undefined) => {
     return new Promise(resolve => setTimeout(resolve, ms));

@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express';
 import moment from 'moment';
 const router = express.Router();
-import { Provider, ProviderAvailability, PatientAppointment } from '../models/index.js';
+import { Provider, ProviderAvailability, PatientAppointment } from '../models/index';
 
 router.post('/create', async(req, res) => {
     const {id, name} = req.body;

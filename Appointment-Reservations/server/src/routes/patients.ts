@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import { Patient } from '../models/index.js';
+import { Patient } from '../models/index';
 const router = express.Router()
 
 router.post('/create', async(req: Request, res: Response) => {

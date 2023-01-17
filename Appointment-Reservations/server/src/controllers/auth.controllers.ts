@@ -1,14 +1,7 @@
-import express, {Request, Response} from 'express';
-import { Provider, Patient } from '../models/index.js';
-const router = express.Router()
+import {Request, Response} from 'express';
+import { Provider, Patient } from '../models/index';
 
-declare module 'express-session' {
-    export interface SessionData {
-        provider: { [key: string]: any };
-    }
-  }
-
-router.post('/', async(req, res) => {
+const loginController = async(req: Request, res: Response) => {
     console.log(req.body);
     const {id, type} = req.body;
     try{
@@ -34,7 +27,9 @@ router.post('/', async(req, res) => {
                 }
             });
             if(patient){
+                console.log(patient);
                 req.session.patient = patient;
+                console.log(req.session);
                 res.status(200).send({message: 'Patient logged in successfully',status:'success'});
             }
             else{
@@ -50,9 +45,9 @@ router.post('/', async(req, res) => {
         .status(500)
         .send({message:"Internal server error", error: err});
     }
-});
+}
 
-router.post('/logout', async(req:Request, res:Response) => {
+const logoutController = async(req:Request, res:Response) => {
     const {type} = req.body;
     try{
         if(type === 'Provider'){
@@ -72,6 +67,6 @@ router.post('/logout', async(req:Request, res:Response) => {
         .status(500)
         .send({message:"Internal server error", error: err});
     }
-});
+}
 
-export default router;
+export {loginController, logoutController};

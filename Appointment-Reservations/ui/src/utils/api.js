@@ -105,9 +105,9 @@ const getProviderTimes = async (providerId, date) => {
     }
 }
 
-const getPatientAppointments = async (patientId) => {
+const getPatientAppointments = async () => {
     try{
-        const res = await fetch(`${baseUrl}/appointments?patient_id=${patientId}`, {
+        const res = await fetch(`${baseUrl}/appointments`, {
             method: 'GET',
             credentials: 'include',
             headers: {

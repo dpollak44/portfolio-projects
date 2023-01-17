@@ -41,7 +41,9 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 }
             });
             if (patient) {
+                console.log(patient);
                 req.session.patient = patient;
+                console.log(req.session);
                 res.status(200).send({ message: 'Patient logged in successfully', status: 'success' });
             }
             else {

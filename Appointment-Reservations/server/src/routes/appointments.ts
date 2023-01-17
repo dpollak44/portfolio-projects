@@ -14,6 +14,7 @@ const router = express.Router()
 
 router.get('/', async(req, res) => {
     console.log('hello')
+    console.log(req.session.patient);
     const {patient} = req.session;
     console.log(patient);
     try{

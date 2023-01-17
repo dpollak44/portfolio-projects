@@ -19,6 +19,7 @@ const index_1 = require("../models/index");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('hello');
+    console.log(req.session.patient);
     const { patient } = req.session;
     console.log(patient);
     try {
