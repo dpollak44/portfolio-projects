@@ -46,7 +46,7 @@ jobs:
             #   npm i
             # else
             #   cd server
-            fi
+            # fi
             
             git checkout master &&
             git fetch --all &&
