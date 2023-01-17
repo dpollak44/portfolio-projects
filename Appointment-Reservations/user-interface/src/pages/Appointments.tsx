@@ -3,17 +3,22 @@ import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-const Appointments = ({appointments,refreshAppointments,onConfirmAppointment}) => {
+interface AppointmentsProps {
+    appointments: any[];
+    refreshAppointments: () => void;
+    confirmAppointment: (id: string) => Promise<string>;
+}
+
+const Appointments = ({appointments,refreshAppointments,confirmAppointment}:AppointmentsProps) => {
 
         useEffect(() => {
             refreshAppointments();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []);
 
-        const handleConfirmAppointment = async(id) => {
-            const {message} = await onConfirmAppointment(id);
+        const onConfirmAppointment = async(id: string) => {
+            const message = await confirmAppointment(id);
             alert(message);
-            refreshAppointments();
-
         }
 
         const tableAppointments = appointments.length > 0 ?
@@ -25,14 +30,14 @@ const Appointments = ({appointments,refreshAppointments,onConfirmAppointment}) =
                             <td>{new Date(appointment.time).toLocaleTimeString()}</td>
                             <td>
                                 {!appointment.confirmed ?
-                                <Button variant="warning" onClick={() => handleConfirmAppointment(appointment.id)}>Confirm</Button>
+                                <Button variant="warning" onClick={() => onConfirmAppointment(appointment.id)}>Confirm</Button>
                                     : <Button variant="success" disabled>Confirmed</Button>
                                 }
                             </td>
                         </tr>
                     )
             })
-            : <tr><td colSpan="4">No appointments</td></tr>;
+            : <tr><td colSpan={4}>No appointments</td></tr>;
 
   
     return (

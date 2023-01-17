@@ -2,16 +2,21 @@ import React,{useState, useEffect} from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import {getProviders, getProviderDates, getProviderTimes, bookPatientAppointment} from '../utils/api.js';
+import {getProviders, getProviderDates, getProviderTimes, bookPatientAppointment} from '../utils/api';
 import DatePicker from "react-datepicker";
 
-const BookAppointment = ({refreshAppointments}) => {
-    const [providers, setProviders] = useState([]);
-    const [provider, setProvider] = useState('');
-    const [availableDates, setAvailableDates] = useState([]);
+interface Props {
+    patient_id: string;
+    refreshAppointments: () => void;
+}
+
+const BookAppointment = ({patient_id,refreshAppointments}: Props) => {
+    const [providers, setProviders] = useState<any[]>([]);
+    const [provider, setProvider] = useState<string | null>();
+    const [availableDates, setAvailableDates] = useState<Array<Date>>([]);
     const [availableTimes, setAvailableTimes] = useState([]);
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
+    const [date, setDate] = useState<Date | null>();
+    const [time, setTime] = useState<Date | null>();
 
     useEffect(() => {
         (async () => {
@@ -20,7 +25,7 @@ const BookAppointment = ({refreshAppointments}) => {
         })();
     }, []);
 
-    const handleProviderChange = (e) => {
+    const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         (async ()=>{
             setProvider(e.target.value);
             const availDates = await getProviderDates(e.target.value);
@@ -28,31 +33,29 @@ const BookAppointment = ({refreshAppointments}) => {
         })();
     }
     
-    const handleDateChange = (date) => {
+    const handleDateChange = (date: Date | null) => {
         (async ()=>{
             setDate(date);
-            const availTimes = await getProviderTimes(provider, date);
+            const availTimes = await getProviderTimes(provider!, date);
             setAvailableTimes(availTimes);
         })();
     }
 
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        let timeString = time.getHours() + ":" + time.getMinutes();
-        const message = await bookPatientAppointment(provider, date, timeString);
-        alert(message);
-        setProvider('');
-        setDate('');
-        setTime('');
+    const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        let timeString = time?.getHours() + ":" + time?.getMinutes();
+        await bookPatientAppointment(patient_id, provider!, date, timeString);
+        setProvider(null);
+        setDate(null);
         refreshAppointments();
     }
 
     return (
         <Container className="book-appointment">
             <h1>Book Appointment</h1>
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
-                    <Form.Select aria-label="select-provider" name = "select-provider" id = "select-provider" value={provider} onChange={(e) => handleProviderChange(e)}>
+                    <Form.Select aria-label="select-provider" name = "select-provider" id = "select-provider" value={provider!} onChange={(e) => handleProviderChange(e)}>
                             <option>Select a Provider</option>
                             {providers.length > 0 && providers.map((provider) => (
                                 <option key={provider.id} value = {provider.id}>{provider.name}</option>
@@ -63,7 +66,7 @@ const BookAppointment = ({refreshAppointments}) => {
                     placeholderText="Choose a Date"
                     selected={date}
                     onChange={(date) => handleDateChange(date)}
-                    minDate={new Date(new Date()).setDate(new Date().getDate() + 1)}
+                    minDate={new Date((new Date()).setDate(new Date().getDate() + 1))}
                     includeDates={availableDates}
                     popperPlacement="bottom"
                     popperModifiers={[
@@ -98,7 +101,7 @@ const BookAppointment = ({refreshAppointments}) => {
                     },
                     ]}
                 />
-                <Button variant="primary" type="submit" onClick={(e) => handleSubmit(e)}>
+                <Button variant="primary" type="submit">
                         Submit
                 </Button>
             </Form>

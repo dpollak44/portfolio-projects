@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import {setProviderAvailability} from '../utils/api.js';
-import SetAvailability from "./SetAvalilability.js";
-import Login from "./Login.js";
+import {setProviderAvailability} from '../utils/api';
+import SetAvailability from "./SetAvalilability";
+import Login from "./Login";
 import "react-datepicker/dist/react-datepicker.css";
 
 const Providers = () => {

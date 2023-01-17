@@ -1,8 +1,8 @@
 import React,{useState} from 'react';
-import Login from './Login.js';
-import BookAppointment from './BookAppointment.js';
-import Appointments from './Appointments.js';
-import {getPatientAppointments,confirmAppointment} from '../utils/api.js';
+import Login from './Login';
+import BookAppointment from './BookAppointment';
+import Appointments from './Appointments';
+import {getPatientAppointments,confirmAppointment} from '../utils/api'
 
 const Patients = () => {
     const [patient_id, setPatientId] = useState('');
@@ -11,14 +11,15 @@ const Patients = () => {
     const refreshAppointments = () => {
         (async () => {
             const res = await getPatientAppointments();
+            console.log(res)
             setAppointments(res);
         })();
     }
 
     const display = patient_id ? 
     <>
-        <BookAppointment refreshAppointments={refreshAppointments}/>
-        <Appointments appointments={appointments} refreshAppointments={refreshAppointments}  onConfirmAppointment={confirmAppointment}/>
+        <BookAppointment patient_id={patient_id} refreshAppointments={refreshAppointments}/>
+        <Appointments appointments={appointments} refreshAppointments={refreshAppointments}  confirmAppointment={confirmAppointment}/>
     </>
     : <Login type="Patient" handleSetId={setPatientId}/>
 
