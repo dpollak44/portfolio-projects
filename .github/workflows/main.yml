@@ -36,7 +36,7 @@ jobs:
           
             #Now we have got the access of EC2 and we will start the deploy .
             DIR="/home/ec2-user/server"
-            pm2 delete all
+            # pm2 delete all
             cd /home/ec2-user
             
             if [ ! -d $DIR ]
@@ -53,5 +53,5 @@ jobs:
             git fetch --all &&
             git reset --hard origin/master &&
             git pull origin master &&
-            pm2 start app.js
+            # pm2 start app.js
           '
